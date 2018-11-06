@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="junit"> 
+     <property name="run.classpath" value="bin"/>  
+    <property name="run.srcpath" value="src"/>  
+    <property name="test.xml" value="xml"/>  
+    <property name="test.report" value="report"/>  
+   <property name="lib.dir" value="libs"/>       
+	<path id="compile.path"> 
+	     <fileset dir="${lib.dir}"> 
+	       <include name="**/*.jar"/> 
+	     </fileset>  
+	     <pathelement path="${run.classpath}"/> 
+	   </path>
+	<target name="init"> 
+	     <delete dir="${test.report}"/>  
+	     <mkdir dir="${test.report}"/>  
+	     <delete dir="${test.xml}"/>  
+	     <mkdir dir="${test.xml}"/> 
+	   </target>
+	<target name="compile" depends="init"> 
+	     <javac destdir="${run.classpath}" srcdir="${run.srcpath}" classpathref="compile.path" includeantruntime="on">
+	     	<compilerarg line="-encoding UTF-8"/></javac> 
+	   </target>
+	<!--Junit task-->  
+	   <target name="junit" depends="compile">
+	   	<retry retrycount="1">
+	   	<junit haltonerror="on" haltonfailure="on" printsummary="on">  
+	       <classpath refid="compile.path"/>  
+	       <formatter type="xml"/>  
+	       <!--<test name="cn.com.vp4.hup.testcase.TestCase_AudioFocus"/> --> 
+	       <batchtest todir="${test.xml}"> 
+	         <fileset dir="${run.classpath}"> 
+	           <include name="com/haiberg/automation/testRunner/LoginRunner.class"/> 
+	         </fileset> 
+	       </batchtest>
+	     </junit>
+	   	</retry>
+	     <junitreport todir="${test.xml}"> 
+	       <fileset dir="${test.xml}"> 
+	         <include name="TEST-*.xml"/> 
+	       </fileset>  
+	       <report format="frames" todir="${test.report}"/> 
+	     </junitreport> 
+	   </target> 
+     </project>     
